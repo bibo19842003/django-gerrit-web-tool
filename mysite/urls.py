@@ -10,4 +10,6 @@ urlpatterns = patterns('',
 
     url(r'^$', 'gerrit.views.index'),
     url(r'^index/$', 'gerrit.views.index'),
+    url(r'^ct_m_p/$', 'gerrit.views.ct_m_p'),
+    url(r'^ct_l_p/$', 'gerrit.views.ct_l_p'),
 )

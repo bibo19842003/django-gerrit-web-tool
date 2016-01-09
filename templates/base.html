@@ -57,12 +57,15 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">command Tool</a></li>
+            {% block index_block %}<li>{% endblock %} <a href="/index/">Overview</a></li>
+            <li><a href="#">Command Tool</a></li>
+            {% block ct_q_block %}<li>{% endblock %} <a href="/ct_l_p/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Less para</a></li>
+            {% block ct_m_block %}<li>{% endblock %} <a href="/ct_m_p/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;More para</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
+          <h1 class="page-header"> {% block head_block %}{% endblock %} </h1>
+          {% block body_block %}{% endblock %}
         </div>
       </div>
     </div>

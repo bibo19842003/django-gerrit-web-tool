@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block ct_q_block %}<li class="active">{% endblock %}
+{% block head_block %}Command line - Less para{% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+  <strong>Server IP  : </strong>
+  <select class="btn btn-default" name="s-ip">
+    {% for ip in ip %}
+      <option value="{{ ip }}">{{ ip }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  <strong> Gerrit User : </strong>
+  <select class="btn btn-default" name="g-user">
+    {% for name in user %}
+      <option value="{{ name.name }}">{{ name.name }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  <strong>Gerrit Port : </strong>
+  <select class="btn btn-default" name="g-port">
+    {% for port in port %}
+      <option value="{{ port.number }}">{{ port.number }}</option>
+    {% endfor %}
+  </select>
+
+  <hr class="hr" /> 
+
+  <div class="btn-group">
+    <input type="submit" class="btn btn-default" name="fc" value="gerrit flush-caches"></input>
+    <input type="submit" class="btn btn-default" name="sc" value="gerrit show-caches"></input>
+    <input type="submit" class="btn btn-default" name="scon" value="gerrit show-connections"></input>
+    <input type="submit" class="btn btn-default" name="sq" value="gerrit show-queue"></input>
+  </div>
+
+</form>
+
+<hr class="hr" /> 
+
+  {% for shows in shows %}
+    {{ shows |linebreaksbr}}
+  {% endfor %}
+
+{% endblock %}

@@ -1,4 +1,6 @@
 *.pyc
 *.bak
 db.sqlite3
-
+*~
+*.swp
+*/migrations/
