@@ -26,7 +26,7 @@ def ct_l_p(request):
     if request.GET.has_key("scon"):
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit show-connections"
     if request.GET.has_key("sq"):
-      run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit show-queue"
+      run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit show-queue -w"
 
     run_command = commands.getstatusoutput(run_string)
     shows = run_command
