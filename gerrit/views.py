@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from server.models import Server
+from django.template import RequestContext, loader, Context
+from server.models import Server, Gerritserver
 from gerrit.models import User, Port
-import commands
+from django.contrib.auth.decorators import login_required
+import commands, os, time, paramiko
 # Create your views here.
 
 def index(request):
@@ -59,5 +61,54 @@ def ct_m_p(request):
   else:
     return render_to_response('command_tool_more_para.html', {'ip': ip, 'user': user, 'port':port,})
 
-  
+
+@login_required  
+def g_r(request):
+  ip = Server.objects.all().order_by('ip')
+  if request.GET.get('s-ip') != None:
+    s_ip = request.GET.get('s-ip')
+    if s_ip =="":
+      return render_to_response('gerrit/gerritrestart/gerritrestart.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+    if request.method == "GET":
+      g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
+      g_ip = g.split()[0] 
+      g_user = g.split()[1] 
+      g_d_ssh_p = int(g.split()[2])
+      g_mail_to = g.split()[4] 
+      g_reviewsite = g.split()[6] 
+      g_sshkey = g.split()[7] 
+
+      gerrit_restart_run = "cd " + g_reviewsite + ";bin/gerrit.sh restart"
+      pkey_file = g_sshkey + '/id_rsa'
+      key = paramiko.RSAKey.from_private_key_file(pkey_file)
+      s = paramiko.SSHClient()
+      s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+      s.load_system_host_keys()
+      s.connect(hostname=g_ip,username=g_user, port=g_d_ssh_p, pkey=key)
+      stdin,stout,stderr=s.exec_command(gerrit_restart_run)
+      filedate = time.strftime('%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
+      runuser =str(request.user)
+      restartlogpath = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/gerritrestart/'
+      logrestart = restartlogpath + filedate + '-' + runuser + '-' + g_ip + '.txt'
+      restartcontent = filedate + '-' + runuser + '-' + g_ip
+      f = open(logrestart ,'w')
+      f.write(restartcontent)
+      f.write('\n')
+      f.write(stout.read())
+      f.close()
+      s.close()
+
+      return render_to_response('gerrit/gerritrestart/gerritrestartok.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+  return render_to_response('gerrit/gerritrestart/gerritrestart.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+
+
+def g_r_log(request):
+  path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/gerritrestart'
+  filenames = os.listdir(path)
+  filenames.sort(reverse = True)
+  return render_to_response('gerrit/gerritrestart/gerritrestartlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
+
 

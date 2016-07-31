@@ -61,6 +61,8 @@
             <li><a href="#">Command Tool</a></li>
             {% block ct_q_block %}<li>{% endblock %} <a href="/ct_l_p/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Less para</a></li>
             {% block ct_m_block %}<li>{% endblock %} <a href="/ct_m_p/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;More para</a></li>
+            <li><a href="#">Maintain</a></li>
+            {% block g_r_block %}<li>{% endblock %} <a href="/g_r/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gerrit Restart</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -80,5 +82,13 @@
     <script src="../static/js/holder.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+    <script>
+      $(function() {
+        $("#waiting .btn").click(function() {
+          $(this).button('loading').delay(1000).queue(function() {
+          });
+        });
+      });
+    </script>
   </body>
 </html>

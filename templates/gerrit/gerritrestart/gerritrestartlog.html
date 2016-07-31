@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block g_r_block %}<li class="active">{% endblock %}
+{% block head_block %}Gerrit Restart Log{% endblock %}
+
+{% block body_block %}
+
+<url>
+  {% for filenames in filenames %}
+    <p><a href="/static/log/gerrit/gerritrestart/{{filenames}}">{{ filenames }}</a></p>
+  {% endfor %}
+</url>
+{% endblock %}

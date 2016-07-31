@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block g_r_block %}<li class="active">{% endblock %}
+{% block head_block %}Gerrit Restart{% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+  <strong>Server IP  : </strong>
+  <select class="btn btn-default" name="s-ip">
+    {% for ip in ip %}
+      <option value="{{ ip }}">{{ ip }}</option>
+    {% endfor %}
+  </select>
+
+
+  <hr class="hr" /> 
+
+  <input id="waiting" type="submit" class="btn btn-default" value="Restart" data-loading-text="Waiting......">
+
+
+</form>
+
+<hr class="hr" /> 
+
+<li><a href="/g_r_log">Gerrit Restart Log</a></li>
+
+{% endblock %}
