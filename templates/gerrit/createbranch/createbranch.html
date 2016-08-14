@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block c_b_block %}<li class="active">{% endblock %}
+{% block head_block %}Gerrit Create Branch{% endblock %}
+
+{% block body_block %}
+
+<form class="form-horizontal" role="form" action="" method="get">
+   <div class="form-group">
+      <label for="firstname" class="col-sm-2 control-label">Server IP</label>
+      <div class="col-sm-3">
+          <select class="btn btn-default" name="s-ip">
+              {% for ip in ip %}
+                  <option value="{{ ip }}">{{ ip }}</option>
+              {% endfor %}
+          </select>
+      </div>
+   </div>
+
+   <div class="form-group">
+      <label for="firstname" class="col-sm-2 control-label">Manifest Name</label>
+      <div class="col-sm-3">
+         <input type="text" class="form-control" name="manifestname" placeholder="Manifest Name">
+      </div>
+   </div>
+
+   <div class="form-group">
+      <label for="lastname" class="col-sm-2 control-label">Tag Name</label>
+      <div class="col-sm-3">
+         <input type="text" class="form-control" name="tagname" placeholder="Tag Name">
+      </div>
+   </div>
+
+   <div class="form-group">
+      <label for="lastname" class="col-sm-2 control-label">Original Branch Name</label>
+      <div class="col-sm-3">
+         <input type="text" class="form-control" name="obname" placeholder="Original Branch Name">
+      </div>
+   </div>
+
+   <div class="form-group">
+      <label for="lastname" class="col-sm-2 control-label">New Branch Name</label>
+      <div class="col-sm-3">
+         <input type="text" class="form-control" name="nbname" placeholder="New Branch Name">
+      </div>
+   </div>
+
+   <hr class="hr" />
+
+   <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-3">
+         <input id="waiting" type="submit" class="btn btn-default" value="Create Branch" data-loading-text="Waiting......">
+      </div>
+   </div>
+</form>
+
+<hr class="hr" />
+
+<li><a href="/c_b_log">Create Branch Log</a></li>
+
+{% endblock %}

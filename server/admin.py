@@ -8,7 +8,7 @@ class ServerAdmin(admin.ModelAdmin):
 
 
 class GerritserverAdmin(admin.ModelAdmin):
-  list_display = ('gerrit_ip', 'user', 'default_ssh_port', 'gerrit_ssh_port', 'gerrit_http_port', 'mail_to', 'project_path', 'reviewsite_path', 'sshkey_path')
+  list_display = ('gerrit_ip', 'user', 'default_ssh_port', 'gerrit_ssh_port', 'gerrit_http_port', 'mail_to', 'project_path', 'reviewsite_path', 'sshkey_path', 'gerrit_user')
   list_filter = ('gerrit_ip',)
 
 admin.site.register(Server, ServerAdmin)

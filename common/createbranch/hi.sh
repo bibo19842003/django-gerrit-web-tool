@@ -1,0 +1,17 @@
+#!/bin/bash
+
+MANIFEST_NAME=$1
+TAG_NAME=$2
+OB_NAME=$3
+NB_NAME=$4
+SERVER_IP=$5
+GERRIT_USER=$6
+GERRIT_PORT=$7
+DJANGO_PATH=$8
+
+WORKSPACE=$9
+RUNUSER=${10}
+
+RUNTIME=`date +%Y-%m-%d-%H-%M-%S`
+${WORKSPACE}/createbranch.sh ${MANIFEST_NAME} ${TAG_NAME} ${OB_NAME} ${NB_NAME} ${SERVER_IP} ${GERRIT_USER} ${GERRIT_PORT} ${DJANGO_PATH} >> "${DJANGO_PATH}/static/log/gerrit/createbranch/${RUNTIME}-${RUNUSER}-${SERVER_IP}.txt" 2>&1
+

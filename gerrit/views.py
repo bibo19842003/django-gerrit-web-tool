@@ -5,7 +5,7 @@ from django.template import RequestContext, loader, Context
 from server.models import Server, Gerritserver
 from gerrit.models import User, Port
 from django.contrib.auth.decorators import login_required
-import commands, os, time, paramiko
+import commands, os, time, paramiko, xml.dom.minidom
 # Create your views here.
 
 def index(request):
@@ -73,11 +73,11 @@ def g_r(request):
     if request.method == "GET":
       g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
       g_ip = g.split()[0] 
-      g_user = g.split()[1] 
+      g_user = g.split()[1]
       g_d_ssh_p = int(g.split()[2])
-      g_mail_to = g.split()[4] 
-      g_reviewsite = g.split()[6] 
-      g_sshkey = g.split()[7] 
+      g_mail_to = g.split()[4]
+      g_reviewsite = g.split()[6]
+      g_sshkey = g.split()[7]
 
       gerrit_restart_run = "cd " + g_reviewsite + ";bin/gerrit.sh restart"
       pkey_file = g_sshkey + '/id_rsa'
@@ -104,11 +104,43 @@ def g_r(request):
   return render_to_response('gerrit/gerritrestart/gerritrestart.html', {'ip': ip,}, context_instance=RequestContext(request))
 
 
-
 def g_r_log(request):
   path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/gerritrestart'
   filenames = os.listdir(path)
   filenames.sort(reverse = True)
   return render_to_response('gerrit/gerritrestart/gerritrestartlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
 
+
+def c_b(request):
+  ip = Server.objects.all().order_by('ip')
+
+  if ( (request.GET.get('s-ip') != None) and (request.GET.get('manifestname') != None) and (request.GET.get('tagname') != None) and (request.GET.get('obname') != None) and (request.GET.get('nbname') != None) ):
+    s_ip = request.GET.get('s-ip')
+    if s_ip =="":
+      return render_to_response('gerrit/createbranch/createbranch.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+    manifestname = request.GET.get('manifestname')
+    tagname = request.GET.get('tagname')
+    obname = request.GET.get('obname')
+    nbname = request.GET.get('nbname')
+
+    if request.method == "GET":
+      g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
+      g_g_ssh = g.split()[3]
+      g_g_user = g.split()[8]
+      runuser =str(request.user)
+
+    workspace = os.path.dirname(os.path.dirname(__file__)) + '/common/createbranch'
+    os.system(workspace + "/hi.sh %s %s %s %s %s %s %s %s %s %s" %(manifestname, tagname, obname, nbname, s_ip, g_g_user, g_g_ssh, os.path.dirname(os.path.dirname(__file__)), workspace, runuser))
+
+    return render_to_response('gerrit/createbranch/createbranchok.html', {'ip': ip,})
+  else:
+    return render_to_response('gerrit/createbranch/createbranch.html', {'ip': ip,})
+
+
+def c_b_log(request):
+  path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/createbranch'
+  filenames = os.listdir(path)
+  filenames.sort(reverse = True)
+  return render_to_response('gerrit/createbranch/createbranchlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
 

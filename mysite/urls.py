@@ -17,4 +17,6 @@ urlpatterns = patterns('',
     url(r'^ct_l_p/$', 'gerrit.views.ct_l_p'),
     url(r'^g_r/$', 'gerrit.views.g_r'),
     url(r'^g_r_log/$', 'gerrit.views.g_r_log'),
+    url(r'^c_b/$', 'gerrit.views.c_b'),
+    url(r'^c_b_log/$', 'gerrit.views.c_b_log'),
 )
