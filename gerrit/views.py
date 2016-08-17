@@ -9,11 +9,11 @@ import commands, os, time, paramiko, xml.dom.minidom
 # Create your views here.
 
 def index(request):
-  return render_to_response('index.html')
+  return render_to_response('index.html', context_instance=RequestContext(request))
 
 def ct_l_p(request):
   ip = Server.objects.all().order_by('ip')
-  user = User.objects.all().order_by('name')
+  name = User.objects.all().order_by('name')
   port = Port.objects.all().order_by('number')
 
   if ( (request.GET.get('s-ip') != None) and (request.GET.get('g-user') != None) and (request.GET.get('g-port') != None) ):
@@ -32,14 +32,14 @@ def ct_l_p(request):
 
     run_command = commands.getstatusoutput(run_string)
     shows = run_command
-    return render_to_response('command_tool_less_para.html', {'ip': ip, 'user': user, 'port':port, 'shows':shows,})
+    return render_to_response('command_tool_less_para.html', {'ip': ip, 'name': name, 'port':port, 'shows':shows,}, context_instance=RequestContext(request))
 
   else:
-    return render_to_response('command_tool_less_para.html', {'ip': ip, 'user': user, 'port':port,})
+    return render_to_response('command_tool_less_para.html', {'ip': ip, 'name': name, 'port':port,}, context_instance=RequestContext(request))
 
 def ct_m_p(request):
   ip = Server.objects.all().order_by('ip')
-  user = User.objects.all().order_by('name')
+  name = User.objects.all().order_by('name')
   port = Port.objects.all().order_by('number')
 
   if ( (request.GET.get('s-ip') != None) and (request.GET.get('g-user') != None) and (request.GET.get('g-port') != None) ):
@@ -56,13 +56,13 @@ def ct_m_p(request):
 
     run_command = commands.getstatusoutput(run_string)
     shows = run_command
-    return render_to_response('command_tool_more_para.html', {'ip': ip, 'user': user, 'port':port, 'shows':shows,})
+    return render_to_response('command_tool_more_para.html', {'ip': ip, 'name': name, 'port':port, 'shows':shows,}, context_instance=RequestContext(request))
 
   else:
-    return render_to_response('command_tool_more_para.html', {'ip': ip, 'user': user, 'port':port,})
+    return render_to_response('command_tool_more_para.html', {'ip': ip, 'name': name, 'port':port,}, context_instance=RequestContext(request))
 
 
-@login_required  
+@login_required
 def g_r(request):
   ip = Server.objects.all().order_by('ip')
   if request.GET.get('s-ip') != None:
@@ -133,9 +133,9 @@ def c_b(request):
     workspace = os.path.dirname(os.path.dirname(__file__)) + '/common/createbranch'
     os.system(workspace + "/hi.sh %s %s %s %s %s %s %s %s %s %s" %(manifestname, tagname, obname, nbname, s_ip, g_g_user, g_g_ssh, os.path.dirname(os.path.dirname(__file__)), workspace, runuser))
 
-    return render_to_response('gerrit/createbranch/createbranchok.html', {'ip': ip,})
+    return render_to_response('gerrit/createbranch/createbranchok.html', {'ip': ip,}, context_instance=RequestContext(request))
   else:
-    return render_to_response('gerrit/createbranch/createbranch.html', {'ip': ip,})
+    return render_to_response('gerrit/createbranch/createbranch.html', {'ip': ip,}, context_instance=RequestContext(request))
 
 
 def c_b_log(request):
