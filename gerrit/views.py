@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext, loader, Context
 from server.models import Server, Gerritserver
-from gerrit.models import User, Port
+from gerrit.models import User, Port, Branch, Owner, Qdownloadcommand
 from django.contrib.auth.decorators import login_required
 import commands, os, time, paramiko, xml.dom.minidom
 # Create your views here.
@@ -144,3 +144,14 @@ def c_b_log(request):
   filenames.sort(reverse = True)
   return render_to_response('gerrit/createbranch/createbranchlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
 
+
+def q_b(request):
+  branch = Branch.objects.all().order_by('branch')
+  owner = Owner.objects.all().order_by('owner')
+  if ( (request.GET.get('b-branch') != None) and (request.GET.get('b-owner') != None)):
+    qbranch = request.GET.get('b-branch')
+    qowner = request.GET.get('b-owner')
+    qdownloadcommand = Qdownloadcommand.objects.filter(branch__branch__icontains=qbranch,owner__owner__icontains=qowner)
+    return render_to_response('gerrit/querybranch/branch.html', {'branch': branch, 'owner': owner, 'qdownloadcommand': qdownloadcommand,}, context_instance=RequestContext(request))
+  else:
+    return render_to_response('gerrit/querybranch/branch.html', {'branch': branch, 'owner': owner,}, context_instance=RequestContext(request))

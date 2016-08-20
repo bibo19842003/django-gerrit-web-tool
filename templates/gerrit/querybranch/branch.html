@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block q_b_block %}<li class="active">{% endblock %}
+{% block head_block %}Download Command Query{% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+  <strong>Branch  : </strong>
+  <select class="btn btn-default" name="b-branch">
+  <option value="" selected="selected"></option>
+    {% for branch in branch %}
+      <option value="{{ branch }}">{{ branch }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  <strong>Owner  : </strong>
+  <select class="btn btn-default" name="b-owner">
+  <option value="" selected="selected"></option>
+    {% for owner in owner %}
+      <option value="{{ owner }}">{{ owner }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  <input id="waiting" type="submit" class="btn btn-default" value="Query" data-loading-text="Waiting......">
+
+</form>
+
+<hr class="hr" />
+
+<div class="table-responsive">
+  <table class="table table-condensed table-striped table-hover">
+    
+    <thead>
+    <tr>
+      <th>Branch</th>
+      <th>Download Command</th>
+      <th>Descripe</th>
+      <th>Owner</th>
+      <th>Create Time</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      {% for qdownloadcommand in qdownloadcommand %}
+      <tr class="info">
+        <td>{{ qdownloadcommand.branch }}</td>
+        <td>{{ qdownloadcommand.download_command }}</td>
+        <td>{{ qdownloadcommand.descripe }}</td>
+        <td>{{ qdownloadcommand.owner }}</td>
+        <td>{{ qdownloadcommand.create_time }}</td>
+      </tr>
+      {% endfor %}
+    </tr>
+    </tbody>
+
+  </table>
+</div>
+
+{% endblock %}
