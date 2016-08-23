@@ -53,6 +53,8 @@ def ct_m_p(request):
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit ls-groups -u " + username
     if request.GET.has_key("ai"):
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit set-account " + username + " --inactive --delete-ssh-key -ALL "
+    if request.GET.has_key("kt"):
+      run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " kill " + username
 
     run_command = commands.getstatusoutput(run_string)
     shows = run_command
