@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block g_c_block %}<li class="active">{% endblock %}
+{% block head_block %}Git GC{% endblock %}
+
+{% block body_block %}
+<li>You had run the script of git gc</li>
+<li>plsease check "Git GC Log"</li>
+</br>
+</br>
+
+<form class="form-horizontal" role="form" action="" method="get">
+   <div class="form-group">
+      <label for="firstname" class="col-sm-2 control-label">Server IP</label>
+      <div class="col-sm-3">
+          <select class="btn btn-default" name="s-ip">
+              {% for ip in ip %}
+                  <option value="{{ ip }}">{{ ip }}</option>
+              {% endfor %}
+          </select>
+      </div>
+   </div>
+
+   <div class="form-group">
+      <label for="firstname" class="col-sm-2 control-label">ProjectName</label>
+      <div class="col-sm-3">
+         <input type="text" class="form-control" name="projectname" placeholder="Project Name">
+      </div>
+   </div>
+
+  <hr class="hr" />
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-3">
+      <input id="waiting" type="submit" class="btn btn-default" value="Git GC" data-loading-text="Waiting......">
+    </div>
+  </div>
+
+</form>
+
+<hr class="hr" /> 
+
+<li><a href="/g_c_log">Git GC Log</a></li>
+
+{% endblock %}

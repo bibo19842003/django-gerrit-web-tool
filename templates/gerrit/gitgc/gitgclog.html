@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block g_c_block %}<li class="active">{% endblock %}
+{% block head_block %}Git GC Log{% endblock %}
+
+{% block body_block %}
+
+<url>
+  {% for filenames in filenames %}
+    <p><a href="/static/log/gerrit/gitgc/{{filenames}}">{{ filenames }}</a></p>
+  {% endfor %}
+</url>
+{% endblock %}
