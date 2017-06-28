@@ -22,6 +22,7 @@ class Gerritserver(models.Model):
   reviewsite_path = models.CharField(max_length=100)
   sshkey_path = models.CharField(max_length=100)
   gerrit_user = models.CharField(max_length=100)
+  gerrit_pass = models.CharField(max_length=100)
 
   def __unicode__(self):
-    return '%s %s %s %s %s %s %s %s %s' % (self.gerrit_ip, self.user, self.default_ssh_port, self.gerrit_ssh_port, self.mail_to, self.project_path, self.reviewsite_path, self.sshkey_path, self.gerrit_user)
+    return '%s %s %s %s %s %s %s %s %s %s' % (self.gerrit_ip, self.user, self.gerrit_ssh_port, self.gerrit_http_port, self.mail_to, self.project_path, self.reviewsite_path, self.sshkey_path, self.gerrit_user, self.gerrit_pass)

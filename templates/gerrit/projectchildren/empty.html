@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block p_c_block %}<li class="active">{% endblock %}
+{% block head_block %} Project Children {% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+  <strong>Server IP  : </strong>
+  <select class="btn btn-default" name="s-ip">
+    {% for ip in ip %}
+      <option value="{{ ip }}">{{ ip }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <strong> Project Name: </strong>
+  <input type="text" name="projectname" />
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <input type="submit" class="btn btn-default" name="search" value="Query"></input>
+
+</form>
+
+<hr class="hr" /> 
+
+<h3>  the project does not have the children project !!!  </h3>
+
+{% endblock %}
