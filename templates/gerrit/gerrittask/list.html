@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block g_t_block %}<li class="active">{% endblock %}
+{% block head_block %} Gerrit Tasks {% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+  <strong>Server IP  : </strong>
+  <select class="btn btn-default" name="s-ip">
+    {% for ip in ip %}
+      <option value="{{ ip }}">{{ ip }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <input type="submit" class="btn btn-default" name="search" value="Query"></input>
+  <input type="submit" class="btn btn-default" name="kill" value="Kill"></input>
+
+</form>
+
+<hr class="hr" /> 
+
+<div class="table-responsive">
+  <table class="table table-condensed table-striped table-hover">
+
+    <thead>
+    <tr>
+      <th>No.</th>
+        {% for tt in tkeys  %}
+         <th>{{ tt }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      {% for task in tvalues %}
+        <tr>
+          <td>
+            {{ forloop.counter }}
+            {% if not forloop.last %}
+              {% for tl in task %}
+                {% if forloop.last %}
+                  <input type="radio" name="radioid" value="{{ tl }}"></input>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </td>
+
+          {% for t in task  %}
+            <td>{{ t|linebreaks }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tr>
+
+{% endblock %}

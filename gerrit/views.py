@@ -287,3 +287,76 @@ def u_g(request):
   else:
     return render_to_response('gerrit/listusergroup/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
 
+
+def g_t(request):
+  ip = Server.objects.all().order_by('ip')
+  outfile = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/gerrittask/task.log'
+
+  if (request.GET.get('s-ip') != None):
+    s_ip = request.GET.get('s-ip')
+
+    g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
+    g_http = g.split()[3]
+    g_path = g.split()[6]
+    g_user = g.split()[8]
+    g_pass = g.split()[9]
+
+    gerrit_config = g_path + "/etc/gerrit.config"
+    auth = commands.getstatusoutput("git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy")[1]
+
+    if request.GET.has_key("search"):
+      if auth == "http":
+        api_command = "curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
+      else:
+        api_command = "curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
+      commands.getstatusoutput(api_command)
+      count = len(open(outfile, 'rU').readlines())
+
+      jsondata = open(outfile)
+      data = json.load(jsondata)
+
+      tkeys = []
+      for line in data:
+        tkeys = line.keys()
+        break
+
+      tvalues = []
+      for line in data:
+        gtvalues = line.values()
+        tvalues.append(gtvalues)
+
+      jsondata.close
+
+      return render_to_response('gerrit/gerrittask/list.html', {'ip': ip, 'tvalues': tvalues, 'tkeys': tkeys }, context_instance=RequestContext(request))
+
+    if request.GET.has_key("kill"):
+      radioid = request.GET.get('radioid')
+      if radioid != None:
+        if auth == "http":
+          api_command = "curl -X DELETE --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks/" + radioid + " ; curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
+        else:
+          api_command = "curl -X DELETE --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks/" + radioid + " ; curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
+        commands.getstatusoutput(api_command)
+        count = len(open(outfile, 'rU').readlines())
+
+        jsondata = open(outfile)
+        data = json.load(jsondata)
+
+        tkeys = []
+        for line in data:
+          tkeys = line.keys()
+          break
+
+        tvalues = []
+        for line in data:
+          gtvalues = line.values()
+          tvalues.append(gtvalues)
+
+        jsondata.close
+
+        return render_to_response('gerrit/gerrittask/list.html', {'ip': ip, 'tvalues': tvalues, 'tkeys': tkeys }, context_instance=RequestContext(request))
+      else:
+        return render_to_response('gerrit/gerrittask/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+  else:
+    return render_to_response('gerrit/gerrittask/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+

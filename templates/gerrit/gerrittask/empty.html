@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block g_t_block %}<li class="active">{% endblock %}
+{% block head_block %} Gerrit Tasks {% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+  <strong>Server IP  : </strong>
+  <select class="btn btn-default" name="s-ip">
+    {% for ip in ip %}
+      <option value="{{ ip }}">{{ ip }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <input type="submit" class="btn btn-default" name="search" value="Query"></input>
+  <input type="submit" class="btn btn-default" name="kill" value="Kill"></input>
+
+</form>
+
+<hr class="hr" /> 
+
+{% endblock %}
