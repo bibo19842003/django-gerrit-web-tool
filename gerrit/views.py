@@ -246,3 +246,44 @@ def p_c(request):
     return render_to_response('gerrit/projectchildren/list.html', {'ip': ip, 'tvalues': tvalues }, context_instance=RequestContext(request))
   else:
     return render_to_response('gerrit/projectchildren/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+
+def u_g(request):
+  ip = Server.objects.all().order_by('ip')
+  outfile = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/listusergroup/group.log'
+
+  if ( (request.GET.get('s-ip') != None) and (request.GET.get('user') != None) ):
+    s_ip = request.GET.get('s-ip')
+    user = request.GET.get('user').replace("/", "%2F")
+
+    g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
+    g_http = g.split()[3]
+    g_path = g.split()[6]
+    g_user = g.split()[8]
+    g_pass = g.split()[9]
+
+    gerrit_config = g_path + "/etc/gerrit.config"
+    auth = commands.getstatusoutput("git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy")[1]
+    if auth == "http":
+      api_command = "curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/accounts/" + user + "/groups > " + outfile + "; sed -i '1d' " + outfile
+    else:
+      api_command = "curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/accounts/" + user + "/groups > " + outfile + "; sed -i '1d' " + outfile
+    commands.getstatusoutput(api_command)
+    count = len(open(outfile, 'rU').readlines())
+    if count == 0:
+      return render_to_response('gerrit/listusergroup/user_is_not_exist.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+    jsondata = open(outfile)
+    data = json.load(jsondata)
+
+    tvalues = []
+    for line in data:
+      gtvalues = line.values()
+      tvalues.append(gtvalues)
+
+    jsondata.close
+
+    return render_to_response('gerrit/listusergroup/list.html', {'ip': ip, 'tvalues': tvalues }, context_instance=RequestContext(request))
+  else:
+    return render_to_response('gerrit/listusergroup/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+
