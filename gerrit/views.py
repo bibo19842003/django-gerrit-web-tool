@@ -360,3 +360,57 @@ def g_t(request):
   else:
     return render_to_response('gerrit/gerrittask/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
 
+
+@login_required
+def c_p(request):
+  runuser =str(request.user)
+  ip = Server.objects.all().order_by('ip')
+  outfile = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/createproject/create.log'
+  if ( (request.GET.get('s-ip') != None) and (request.GET.get('parentproject') != None) and (request.GET.get('projectname') != None) ):
+    s_ip = request.GET.get('s-ip')
+    if s_ip =="":
+      return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+    parentproject = request.GET.get('parentproject').replace("/", "%2F")
+    if parentproject =="":
+      return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+    g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
+    g_ssh_port = g.split()[2]
+    g_http = g.split()[3]
+    g_path = g.split()[6]
+    g_user = g.split()[8]
+    g_pass = g.split()[9]
+
+    gerrit_config = g_path + "/etc/gerrit.config"
+    auth = commands.getstatusoutput("git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy")[1]
+    if auth == "http":
+      api_command = "curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/projects/" + parentproject + " > " + outfile + "; sed -i '1d' " + outfile
+    else:
+      api_command = "curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/projects/" + parentproject + " > "  + outfile + "; sed -i '1d' " + outfile
+    commands.getstatusoutput(api_command)
+    count = len(open(outfile, 'rU').readlines())
+    if count == 0:
+      return render_to_response('gerrit/createproject/parentproject_is_not_exist.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+    projectname = request.GET.get('projectname')
+    if projectname =="":
+      return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+    workspace = os.path.dirname(os.path.dirname(__file__)) + '/common/createproject'
+    runtime = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+    print(projectname)
+    for project in projectname.split():
+      os.system(workspace + "/createproject.sh %s %s %s %s %s %s %s %s" %(g_ssh_port, g_user, s_ip, project, parentproject, runtime, runuser, os.path.dirname(os.path.dirname(__file__))))
+
+    return render_to_response('gerrit/createproject/createprojectok.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+  return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+
+
+def c_p_log(request):
+  path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/createproject'
+  filenames = os.listdir(path)
+  filenames.sort(reverse = True)
+  return render_to_response('gerrit/createproject/createprojectlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
+

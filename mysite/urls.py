@@ -29,4 +29,6 @@ urlpatterns = patterns('',
     url(r'^p_c/$', 'gerrit.views.p_c'),
     url(r'^u_g/$', 'gerrit.views.u_g'),
     url(r'^g_t/$', 'gerrit.views.g_t'),
+    url(r'^c_p/$', 'gerrit.views.c_p'),
+    url(r'^c_p_log/$', 'gerrit.views.c_p_log'),
 )
