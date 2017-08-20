@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 # compatible 1.6, from 1.7 it can auto load
 admin.autodiscover()
@@ -9,8 +11,8 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'mysite.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^avatar/', include('avatar.urls')),
 
     url(r'^accounts/login/$', views.login, {'template_name': 'admin/login.html'}),
     url(r'^accounts/logout/$', views.logout_then_login),
@@ -32,3 +34,5 @@ urlpatterns = patterns('',
     url(r'^c_p/$', 'gerrit.views.c_p'),
     url(r'^c_p_log/$', 'gerrit.views.c_p_log'),
 )
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

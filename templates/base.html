@@ -44,6 +44,10 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li>
+              {% load avatar_tags %}
+              <div><a href="{% url 'avatar_change' %}">{% avatar user 50 %}</a></div>
+            </li>
+            <li>
               {% if user.is_authenticated %}
                 <a href"#">Welocome, {{ user.username }}</a>
               {% endif %}
