@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Server, Gerritserver
+from .models import Server, Gerritserver
 # Register your models here.
 
 class ServerAdmin(admin.ModelAdmin):

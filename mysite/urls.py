@@ -1,38 +1,42 @@
-from django.conf.urls import patterns, include, url
+"""test1 URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/2.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+
+from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth import views
+from django.urls import path
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
 # compatible 1.6, from 1.7 it can auto load
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'mysite.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^avatar/', include('avatar.urls')),
+# from django 2.1.1
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+# ]
 
-    url(r'^accounts/login/$', views.login, {'template_name': 'admin/login.html'}),
-    url(r'^accounts/logout/$', views.logout_then_login),
+urlpatterns = [ 
+    path('admin/', admin.site.urls),
+    path(r'^avatar/', include('avatar.urls')),
+    path('', include('gerrit.urls')),
 
-    url(r'^$', 'gerrit.views.index'),
-    url(r'^index/$', 'gerrit.views.index'),
-    url(r'^ct_m_p/$', 'gerrit.views.ct_m_p'),
-    url(r'^ct_l_p/$', 'gerrit.views.ct_l_p'),
-    url(r'^g_r/$', 'gerrit.views.g_r'),
-    url(r'^g_r_log/$', 'gerrit.views.g_r_log'),
-    url(r'^c_b/$', 'gerrit.views.c_b'),
-    url(r'^c_b_log/$', 'gerrit.views.c_b_log'),
-    url(r'^q_b/$', 'gerrit.views.q_b'),
-    url(r'^g_c/$', 'gerrit.views.g_c'),
-    url(r'^g_c_log/$', 'gerrit.views.g_c_log'),
-    url(r'^p_c/$', 'gerrit.views.p_c'),
-    url(r'^u_g/$', 'gerrit.views.u_g'),
-    url(r'^g_t/$', 'gerrit.views.g_t'),
-    url(r'^c_p/$', 'gerrit.views.c_p'),
-    url(r'^c_p_log/$', 'gerrit.views.c_p_log'),
-)
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='admin/login.html')),
+    path('accounts/logout/', auth_views.LogoutView.as_view()),
+
+]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

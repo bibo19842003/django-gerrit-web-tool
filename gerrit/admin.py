@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import User, Port, Branch, Owner, Qdownloadcommand
+from .models import User, Port, Branch, Owner, Qdownloadcommand
 # Register your models here.
 
 class UserAdmin(admin.ModelAdmin):

@@ -1,15 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
 from django.template import RequestContext, loader, Context
 from server.models import Server, Gerritserver
 from gerrit.models import User, Port, Branch, Owner, Qdownloadcommand
 from django.contrib.auth.decorators import login_required
-import commands, os, time, paramiko, xml.dom.minidom, json
+import subprocess, os, time, paramiko, xml.dom.minidom, json
 # Create your views here.
 
 def index(request):
-  return render_to_response('index.html', context_instance=RequestContext(request))
+  return render(request, 'index.html')
+#  return HttpResponse("xxxxxxxxxxxxxxxxxxxxxxxxx")
 
 def ct_l_p(request):
   ip = Server.objects.all().order_by('ip')
@@ -21,21 +21,20 @@ def ct_l_p(request):
     g_user = request.GET.get('g-user')
     g_port = request.GET.get('g-port')
 
-    if request.GET.has_key("fc"):
+    if "fc" in request.GET:
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit flush-caches"
-    if request.GET.has_key("sc"):
+    if "sc" in request.GET:
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit show-caches"
-    if request.GET.has_key("scon"):
+    if "scon" in request.GET:
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit show-connections"
-    if request.GET.has_key("sq"):
+    if "sq" in request.GET:
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit show-queue -w"
 
-    run_command = commands.getstatusoutput(run_string)
-    shows = run_command
-    return render_to_response('command_tool_less_para.html', {'ip': ip, 'name': name, 'port':port, 'shows':shows,}, context_instance=RequestContext(request))
-
+    run_command = subprocess.getstatusoutput(run_string)
+    shows = run_command[1]
+    return render(request, 'gerrit/command_tool_less_para.html', {'ip': ip, 'name': name, 'port': port, 'shows': shows})
   else:
-    return render_to_response('command_tool_less_para.html', {'ip': ip, 'name': name, 'port':port,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/command_tool_less_para.html', {'ip': ip, 'name': name, 'port': port})
 
 def ct_m_p(request):
   ip = Server.objects.all().order_by('ip')
@@ -49,19 +48,19 @@ def ct_m_p(request):
 
     username = request.GET.get('username')
 
-    if request.GET.has_key("ls"):
+    if "ls" in request.GET:
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit ls-groups -u " + username
-    if request.GET.has_key("ai"):
+    if "ai" in request.GET:
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit set-account " + username + " --inactive --delete-ssh-key -ALL "
-    if request.GET.has_key("kt"):
+    if "kt" in request.GET:
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " kill " + username
 
-    run_command = commands.getstatusoutput(run_string)
-    shows = run_command
-    return render_to_response('command_tool_more_para.html', {'ip': ip, 'name': name, 'port':port, 'shows':shows,}, context_instance=RequestContext(request))
+    run_command = subprocess.getstatusoutput(run_string)
+    shows = run_command[1]
+    return render(request, 'gerrit/command_tool_more_para.html', {'ip': ip, 'name': name, 'port':port, 'shows':shows,})
 
   else:
-    return render_to_response('command_tool_more_para.html', {'ip': ip, 'name': name, 'port':port,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/command_tool_more_para.html', {'ip': ip, 'name': name, 'port':port,})
 
 
 @login_required
@@ -70,7 +69,7 @@ def g_r(request):
   if request.GET.get('s-ip') != None:
     s_ip = request.GET.get('s-ip')
     if s_ip =="":
-      return render_to_response('gerrit/gerritrestart/gerritrestart.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/gerritrestart/gerritrestart.html', {'ip': ip,})
 
     if request.method == "GET":
       g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
@@ -101,16 +100,16 @@ def g_r(request):
       f.close()
       s.close()
 
-      return render_to_response('gerrit/gerritrestart/gerritrestartok.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/gerritrestart/gerritrestartok.html', {'ip': ip,})
 
-  return render_to_response('gerrit/gerritrestart/gerritrestart.html', {'ip': ip,}, context_instance=RequestContext(request))
+  return render(request, 'gerrit/gerritrestart/gerritrestart.html', {'ip': ip,})
 
 
 def g_r_log(request):
   path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/gerritrestart'
   filenames = os.listdir(path)
   filenames.sort(reverse = True)
-  return render_to_response('gerrit/gerritrestart/gerritrestartlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
+  return render(request, 'gerrit/gerritrestart/gerritrestartlog.html', {'filenames': filenames,})
 
 
 def c_b(request):
@@ -119,7 +118,7 @@ def c_b(request):
   if ( (request.GET.get('s-ip') != None) and (request.GET.get('manifestname') != None) and (request.GET.get('tagname') != None) and (request.GET.get('obname') != None) and (request.GET.get('nbname') != None) ):
     s_ip = request.GET.get('s-ip')
     if s_ip =="":
-      return render_to_response('gerrit/createbranch/createbranch.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/createbranch/createbranch.html', {'ip': ip,})
 
     manifestname = request.GET.get('manifestname')
     tagname = request.GET.get('tagname')
@@ -135,16 +134,16 @@ def c_b(request):
     workspace = os.path.dirname(os.path.dirname(__file__)) + '/common/createbranch'
     os.system(workspace + "/hi.sh %s %s %s %s %s %s %s %s %s %s" %(manifestname, tagname, obname, nbname, s_ip, g_g_user, g_g_ssh, os.path.dirname(os.path.dirname(__file__)), workspace, runuser))
 
-    return render_to_response('gerrit/createbranch/createbranchok.html', {'ip': ip,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/createbranch/createbranchok.html', {'ip': ip,})
   else:
-    return render_to_response('gerrit/createbranch/createbranch.html', {'ip': ip,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/createbranch/createbranch.html', {'ip': ip,})
 
 
 def c_b_log(request):
   path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/createbranch'
   filenames = os.listdir(path)
   filenames.sort(reverse = True)
-  return render_to_response('gerrit/createbranch/createbranchlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
+  return render(request, 'gerrit/createbranch/createbranchlog.html', {'filenames': filenames,})
 
 
 def q_b(request):
@@ -154,9 +153,9 @@ def q_b(request):
     qbranch = request.GET.get('b-branch')
     qowner = request.GET.get('b-owner')
     qdownloadcommand = Qdownloadcommand.objects.filter(branch__branch__icontains=qbranch,owner__owner__icontains=qowner)
-    return render_to_response('gerrit/querybranch/branch.html', {'branch': branch, 'owner': owner, 'qdownloadcommand': qdownloadcommand,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/querybranch/branch.html', {'branch': branch, 'owner': owner, 'qdownloadcommand': qdownloadcommand,})
   else:
-    return render_to_response('gerrit/querybranch/branch.html', {'branch': branch, 'owner': owner,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/querybranch/branch.html', {'branch': branch, 'owner': owner,})
 
 
 @login_required
@@ -165,7 +164,7 @@ def g_c(request):
   if ( (request.GET.get('s-ip') != None) and (request.GET.get('projectname') != None) ):
     s_ip = request.GET.get('s-ip')
     if s_ip =="":
-      return render_to_response('gerrit/gitgc/gitgc.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/gitgc/gitgc.html', {'ip': ip,})
 
     projectname = request.GET.get('projectname')
 
@@ -177,7 +176,6 @@ def g_c(request):
       g_mail_to = g.split()[4]
       g_project_path = g.split()[5]
       g_sshkey = g.split()[7]
-
       project_path = g_project_path + '/' + projectname
 
       filedate = time.strftime('%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
@@ -195,16 +193,16 @@ def g_c(request):
       s.connect(hostname=g_ip,username=g_user, port=g_d_ssh_p, pkey=key)
       stdin,stdout,stderr=s.exec_command(git_gc_run)
 
-      return render_to_response('gerrit/gitgc/gitgcok.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/gitgc/gitgcok.html', {'ip': ip,})
 
-  return render_to_response('gerrit/gitgc/gitgc.html', {'ip': ip,}, context_instance=RequestContext(request))
+  return render(request, 'gerrit/gitgc/gitgc.html', {'ip': ip,})
 
 
 def g_c_log(request):
   path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/gitgc'
   filenames = os.listdir(path)
   filenames.sort(reverse = True)
-  return render_to_response('gerrit/gitgc/gitgclog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
+  return render(request, 'gerrit/gitgc/gitgclog.html', {'filenames': filenames,})
 
 
 @login_required
@@ -223,15 +221,15 @@ def p_c(request):
     g_pass = g.split()[9]
 
     gerrit_config = g_path + "/etc/gerrit.config"
-    auth = commands.getstatusoutput("git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy")[1]
+    auth = subprocess.Popen('git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy', shell=True)
     if auth == "http":
       api_command = "curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/projects/" + projectname + "/children > " + outfile + "; sed -i '1d' " + outfile
     else:
       api_command = "curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/projects/" + projectname + "/children > " + outfile + "; sed -i '1d' " + outfile
-    commands.getstatusoutput(api_command)
+    subprocess.Popen(api_command, shell=True)
     count = len(open(outfile, 'rU').readlines())
     if count == 1:
-      return render_to_response('gerrit/projectchildren/project_is_not_exist.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/projectchildren/project_is_not_exist.html', {'ip': ip,})
 
     jsondata = open(outfile)
     data = json.load(jsondata)
@@ -243,9 +241,9 @@ def p_c(request):
 
     jsondata.close
 
-    return render_to_response('gerrit/projectchildren/list.html', {'ip': ip, 'tvalues': tvalues }, context_instance=RequestContext(request))
+    return render(request, 'gerrit/projectchildren/list.html', {'ip': ip, 'tvalues': tvalues })
   else:
-    return render_to_response('gerrit/projectchildren/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/projectchildren/empty.html', {'ip': ip,})
 
 
 def u_g(request):
@@ -263,15 +261,15 @@ def u_g(request):
     g_pass = g.split()[9]
 
     gerrit_config = g_path + "/etc/gerrit.config"
-    auth = commands.getstatusoutput("git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy")[1]
+    auth = subprocess.Popen('git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy', shell=True)
     if auth == "http":
       api_command = "curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/accounts/" + user + "/groups > " + outfile + "; sed -i '1d' " + outfile
     else:
       api_command = "curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/accounts/" + user + "/groups > " + outfile + "; sed -i '1d' " + outfile
-    commands.getstatusoutput(api_command)
+    subprocess.Popen(api_command, shell=True)
     count = len(open(outfile, 'rU').readlines())
     if count == 0:
-      return render_to_response('gerrit/listusergroup/user_is_not_exist.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/listusergroup/user_is_not_exist.html', {'ip': ip,})
 
     jsondata = open(outfile)
     data = json.load(jsondata)
@@ -283,9 +281,9 @@ def u_g(request):
 
     jsondata.close
 
-    return render_to_response('gerrit/listusergroup/list.html', {'ip': ip, 'tvalues': tvalues }, context_instance=RequestContext(request))
+    return render(request, 'gerrit/listusergroup/list.html', {'ip': ip, 'tvalues': tvalues })
   else:
-    return render_to_response('gerrit/listusergroup/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/listusergroup/empty.html', {'ip': ip,})
 
 
 def g_t(request):
@@ -302,42 +300,37 @@ def g_t(request):
     g_pass = g.split()[9]
 
     gerrit_config = g_path + "/etc/gerrit.config"
-    auth = commands.getstatusoutput("git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy")[1]
+    auth = subprocess.Popen('git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy', shell=True)
 
-    if request.GET.has_key("search"):
+    if "search" in request.GET:
       if auth == "http":
         api_command = "curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
       else:
         api_command = "curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
-      commands.getstatusoutput(api_command)
-      count = len(open(outfile, 'rU').readlines())
-
+      subprocess.Popen(api_command, shell=True)
       jsondata = open(outfile)
       data = json.load(jsondata)
-
+      print(data)
       tkeys = []
       for line in data:
         tkeys = line.keys()
         break
-
       tvalues = []
       for line in data:
         gtvalues = line.values()
         tvalues.append(gtvalues)
-
       jsondata.close
 
-      return render_to_response('gerrit/gerrittask/list.html', {'ip': ip, 'tvalues': tvalues, 'tkeys': tkeys }, context_instance=RequestContext(request))
+      return render(request, 'gerrit/gerrittask/list.html', {'ip': ip, 'tvalues': tvalues, 'tkeys': tkeys })
 
-    if request.GET.has_key("kill"):
+    if "kill" in request.GET:
       radioid = request.GET.get('radioid')
       if radioid != None:
         if auth == "http":
           api_command = "curl -X DELETE --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks/" + radioid + " ; curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
         else:
           api_command = "curl -X DELETE --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks/" + radioid + " ; curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/config/server/tasks > " + outfile + "; sed -i '1d' " + outfile
-        commands.getstatusoutput(api_command)
-        count = len(open(outfile, 'rU').readlines())
+        subprocess.Popen(api_command, shell=True)
 
         jsondata = open(outfile)
         data = json.load(jsondata)
@@ -354,11 +347,11 @@ def g_t(request):
 
         jsondata.close
 
-        return render_to_response('gerrit/gerrittask/list.html', {'ip': ip, 'tvalues': tvalues, 'tkeys': tkeys }, context_instance=RequestContext(request))
+        return render(request, 'gerrit/gerrittask/list.html', {'ip': ip, 'tvalues': tvalues, 'tkeys': tkeys })
       else:
-        return render_to_response('gerrit/gerrittask/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+        return render(request, 'gerrit/gerrittask/empty.html', {'ip': ip,})
   else:
-    return render_to_response('gerrit/gerrittask/empty.html', {'ip': ip,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/gerrittask/empty.html', {'ip': ip,})
 
 
 @login_required
@@ -369,11 +362,11 @@ def c_p(request):
   if ( (request.GET.get('s-ip') != None) and (request.GET.get('parentproject') != None) and (request.GET.get('projectname') != None) ):
     s_ip = request.GET.get('s-ip')
     if s_ip =="":
-      return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/createproject/createproject.html', {'ip': ip,})
 
     parentproject = request.GET.get('parentproject').replace("/", "%2F")
     if parentproject =="":
-      return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/createproject/createproject.html', {'ip': ip,})
 
     g = str(Gerritserver.objects.filter(gerrit_ip__ip=s_ip)[0])
     g_ssh_port = g.split()[2]
@@ -383,19 +376,19 @@ def c_p(request):
     g_pass = g.split()[9]
 
     gerrit_config = g_path + "/etc/gerrit.config"
-    auth = commands.getstatusoutput("git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy")[1]
+    auth = subprocess.Popen('git config -f /home/bibo/house/work/review_site/etc/gerrit.config --get auth.gitBasicAuthPolicy', shell=True)
     if auth == "http":
       api_command = "curl --basic --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/projects/" + parentproject + " > " + outfile + "; sed -i '1d' " + outfile
     else:
       api_command = "curl --user " + g_user + ":" + g_pass + " http://" + s_ip + ":" + g_http + "/a/projects/" + parentproject + " > "  + outfile + "; sed -i '1d' " + outfile
-    commands.getstatusoutput(api_command)
+    subprocess.Popen(api_command, shell=True)
     count = len(open(outfile, 'rU').readlines())
     if count == 0:
-      return render_to_response('gerrit/createproject/parentproject_is_not_exist.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/createproject/parentproject_is_not_exist.html', {'ip': ip,})
 
     projectname = request.GET.get('projectname')
     if projectname =="":
-      return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+      return render(request, 'gerrit/createproject/createproject.html', {'ip': ip,})
 
     workspace = os.path.dirname(os.path.dirname(__file__)) + '/common/createproject'
     runtime = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
@@ -403,14 +396,14 @@ def c_p(request):
     for project in projectname.split():
       os.system(workspace + "/createproject.sh %s %s %s %s %s %s %s %s" %(g_ssh_port, g_user, s_ip, project, parentproject, runtime, runuser, os.path.dirname(os.path.dirname(__file__))))
 
-    return render_to_response('gerrit/createproject/createprojectok.html', {'ip': ip,}, context_instance=RequestContext(request))
+    return render(request, 'gerrit/createproject/createprojectok.html', {'ip': ip,})
 
-  return render_to_response('gerrit/createproject/createproject.html', {'ip': ip,}, context_instance=RequestContext(request))
+  return render(request, 'gerrit/createproject/createproject.html', {'ip': ip,})
 
 
 def c_p_log(request):
   path = os.path.dirname(os.path.dirname(__file__)) + '/static/log/gerrit/createproject'
   filenames = os.listdir(path)
   filenames.sort(reverse = True)
-  return render_to_response('gerrit/createproject/createprojectlog.html', {'filenames': filenames,}, context_instance=RequestContext(request))
+  return render(request, 'gerrit/createproject/createprojectlog.html', {'filenames': filenames,})
 
