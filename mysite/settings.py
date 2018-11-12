@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'server',
     'gerrit',
     'avatar',
+    'monitor',
 )
 
 MIDDLEWARE = [

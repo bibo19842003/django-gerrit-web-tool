@@ -3,3 +3,4 @@ django-avatar==4.1.0
 Pillow==3.1.2
 django-appconf==1.0.2
 paramiko==2.4.2
+psutil==5.4.8

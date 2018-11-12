@@ -26,6 +26,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    {% block highcharts_block %}{% endblock %}
   </head>
 
   <body>
@@ -86,6 +87,9 @@
             {% block p_c_block %}<li>{% endblock %} <a href="/p_c/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Project Children</a></li>
             {% block u_g_block %}<li>{% endblock %} <a href="/u_g/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User in Groups</a></li>
             {% block g_t_block %}<li>{% endblock %} <a href="/g_t/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gerrit Task</a></li>
+            <li><a href="#">Monitor</a></li>
+            {% block m_cpu_block %}<li>{% endblock %} <a href="/m_cpu/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CPU</a></li>
+            {% block m_mem_block %}<li>{% endblock %} <a href="/m_mem/">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Memory</a></li>
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
