@@ -31,7 +31,7 @@ def ct_l_p(request):
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " gerrit show-queue -w"
 
     run_command = subprocess.getstatusoutput(run_string)
-    shows = run_command[1]
+    shows = run_command[1].replace(" ","&nbsp;&nbsp;")
     return render(request, 'gerrit/command_tool_less_para.html', {'ip': ip, 'name': name, 'port': port, 'shows': shows})
   else:
     return render(request, 'gerrit/command_tool_less_para.html', {'ip': ip, 'name': name, 'port': port})
@@ -56,7 +56,7 @@ def ct_m_p(request):
       run_string = "ssh -p " + g_port + " " + g_user + "@" + s_ip + " kill " + username
 
     run_command = subprocess.getstatusoutput(run_string)
-    shows = run_command[1]
+    shows = run_command[1].replace(" ","&nbsp;&nbsp;")
     return render(request, 'gerrit/command_tool_more_para.html', {'ip': ip, 'name': name, 'port':port, 'shows':shows,})
 
   else:

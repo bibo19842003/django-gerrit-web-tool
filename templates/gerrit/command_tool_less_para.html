@@ -43,8 +43,9 @@
 
 <hr class="hr" /> 
 
-  {% for shows in shows %}
-    {{ shows |linebreaksbr}}
-  {% endfor %}
+  {% autoescape off %}
+    {{ shows | linebreaksbr }}
+  {% endautoescape %}
 
 {% endblock %}
+
