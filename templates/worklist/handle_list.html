@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block list_accept_block %}<li class="active">{% endblock %}
+{% block head_block %}Work List Accept{% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+
+  <strong>list status  : </strong>
+  <select class="btn btn-default" name="w-list-status">
+  <option value="" selected="selected"></option>
+    {% for list_status in list_status %}
+      <option value="{{ list_status }}">{{ list_status }}</option>
+    {% endfor %}
+  </select>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  <div class="btn-group">
+    <input type="submit" class="btn btn-default" name="querydata" value="查询"></input>
+    <input type="submit" class="btn btn-default" name="listaccept" value="接受任务"></input>
+    <input type="submit" class="btn btn-default" name="listdone" value="处理完成"></input>
+  </div>
+
+
+<hr class="hr" />
+
+
+<div class="table-responsive">
+  <table class="table table-condensed table-striped table-hover">
+    
+    <thead>
+    <tr>
+      <th>序号</th>
+      <th>单号</th>
+      <th>创建人</th>
+      <th>创建时间</th>
+      <th>问题描述</th>
+      <th>状态</th>
+      <th>分类</th>
+      <th>处理人</th>
+      <th>处理开始时间</th>
+      <th>处理结束时间</th>
+      <th>等待处理时长</th>
+      <th>处理时长</th>
+      <th>问题经历时长</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      {% for qqq in worklist %}
+      <tr class="info">
+
+        <td>
+          {{ forloop.counter }}
+          <input type="radio" name="radioid" value="{{ qqq.list_num }}""></input>
+        </td>
+
+        <td>{{ qqq.list_num }}</td>
+        <td>{{ qqq.creator }}</td>
+        <td>{{ qqq.create_time }}</td>
+        <td>{{ qqq.descripe }}</td>
+        <td>{{ qqq.list_status }}</td>
+        <td>{{ qqq.list_sort }}</td>
+        <td>{{ qqq.handler }}</td>
+        <td>{{ qqq.handle_begin }}</td>
+        <td>{{ qqq.handle_end }}</td>
+        <td>{{ qqq.wait_time }}</td>
+        <td>{{ qqq.handle_time }}</td>
+        <td>{{ qqq.list_time }}</td>
+      </tr>
+      {% endfor %}
+    </tr>
+    </tbody>
+
+  </table>
+</div>
+
+
+</form>
+
+{% endblock %}

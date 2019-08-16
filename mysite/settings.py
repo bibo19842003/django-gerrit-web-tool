@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'gerrit',
     'avatar',
     'monitor',
+    'worklist',
 )
 
 MIDDLEWARE = [
