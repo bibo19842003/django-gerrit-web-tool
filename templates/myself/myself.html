@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block head_block %}Myself Information{% endblock %}
+
+{% block body_block %}
+
+<form action="" method="get">
+
+<div class="table-responsive">
+  <table class="table table-condensed table-striped table-hover">
+    
+    <thead>
+    <tr>
+      <th>序号</th>
+      <th>所在群组</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      {% for usergroups in usergroups %}
+      <tr class="info">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ usergroups.name }}</td>
+
+      </tr>
+      {% endfor %}
+    </tr>
+    </tbody>
+
+  </table>
+</div>
+
+{% endblock %}

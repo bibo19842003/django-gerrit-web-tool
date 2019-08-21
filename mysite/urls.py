@@ -35,6 +35,7 @@ urlpatterns = [
     path('', include('gerrit.urls')),
     path('', include('monitor.urls')),
     path('', include('worklist.urls')),
+    path('', include('myself.urls')),
 
     path('accounts/login/', auth_views.LoginView.as_view(template_name='admin/login.html')),
     path('accounts/logout/', auth_views.LogoutView.as_view()),
