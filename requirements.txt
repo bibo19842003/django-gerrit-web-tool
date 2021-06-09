@@ -1,4 +1,4 @@
-django==2.2.20
+django==2.2.22
 django-avatar==4.1.0
 Pillow==8.1.1
 django-appconf==1.0.2
