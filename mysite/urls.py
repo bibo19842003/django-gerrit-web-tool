@@ -13,25 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
-from django.conf.urls import include, url
+from django.urls import re_path as url
+from django.urls import include, path
 from django.contrib import admin
-from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
-# compatible 1.6, from 1.7 it can auto load
-admin.autodiscover()
-
-# from django 2.1.1
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-# ]
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
-    path(r'^avatar/', include('avatar.urls')),
+    path('avatar/', include('avatar.urls')),
     path('', include('gerrit.urls')),
     path('', include('monitor.urls')),
     path('', include('worklist.urls')),
